@@ -2,7 +2,6 @@
 #include "framelesswindow.h"
 #include "titlebar.h"
 #include "windoweffect.h"
-#include "bms.h"
 #include "pcs.h"
 #include "QNetworkAccessManager"
 #include "QNetworkReply"
