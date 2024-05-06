@@ -11,7 +11,7 @@ Http::Http(QObject *parent)
 }
 
 // 获取onenet数据流最新数据
-void Http::onenetRetData(const QString& id, const QDateTime& sendTime)
+void Http::onenetRetData( const QDateTime& sendTime)
 {
     qDebug() << "send_time_str" << sendTime.toString();
 
@@ -34,15 +34,16 @@ void Http::onenetRetData(const QString& id, const QDateTime& sendTime)
     m_manager->get(request);
 }
 
-
 // 处理网络响应
 void Http::onNetworkReply(QNetworkReply* reply)
 {
     if (reply->error() == QNetworkReply::NoError)
     {
+        qDebug()<<"onNetworkReply";
         // 读取响应数据
         QByteArray data = reply->readAll();
-
+        qDebug()<<"onNetworkReply";
+        qDebug() << "Data:" << data;
         // 解析JSON
         QJsonDocument doc = QJsonDocument::fromJson(data);
         QJsonObject obj = doc.object();
@@ -78,7 +79,43 @@ void Http::onNetworkReply(QNetworkReply* reply)
     {
         qDebug() << "Error:" << reply->errorString();
     }
-
     // 释放网络响应对象
     reply->deleteLater();
+}
+
+
+
+void Http::cmd_send(const QString& cmd)
+{
+
+
+    QString url = "http://api.heclouds.com/cmds?device_id=" + id;
+    // 发送GET请求
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader("api-key", "R218Q5jpynJPvh8ow9b8LBXFNr0=");
+    // QString testData = "0a79c6f2";
+    m_manager->post(request, cmd.toUtf8());
+    // QNetworkReply* reply = m_manager->post(request, testData.toUtf8());
+
+
+}
+void Http::requestFinished(QNetworkReply* reply) {
+    // 获取http状态码
+    QVariant statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    if(statusCode.isValid())
+        qDebug() << "status code=" << statusCode.toInt();
+
+    QVariant reason = reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString();
+    if(reason.isValid())
+        qDebug() << "reason=" << reason.toString();
+
+    QNetworkReply::NetworkError err = reply->error();
+    if(err != QNetworkReply::NoError) {
+        qDebug() << "Failed: " << reply->errorString();
+    }
+    else {
+        // 获取返回内容
+        qDebug() << reply->readAll();
+    }
 }

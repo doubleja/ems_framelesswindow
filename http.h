@@ -18,9 +18,11 @@ class Http : public QObject
 public:
     explicit Http(QObject *parent = nullptr);
     // 函数声明
-    void onenetRetData(const QString& id, const QDateTime& sendTime);
+    void onenetRetData( const QDateTime& sendTime);
     void onNetworkReply(QNetworkReply* reply);
-
+    void cmd_send(const QString& cmd );
+    void requestFinished(QNetworkReply* reply) ;
+    QString id ="1097949264";
     QNetworkAccessManager *m_manager;
 signals:
 

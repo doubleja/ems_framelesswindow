@@ -16,6 +16,7 @@ public:
     explicit PCS(QWidget *parent = nullptr);
     ~PCS();
     void myslots();
+    void myslots2();
 
 private:
     Ui::PCS *ui;
